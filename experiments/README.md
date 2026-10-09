@@ -1,6 +1,6 @@
-# DBMS Experiments 3–6
+# DBMS Experiments 1–6
 
-These scripts are a self-contained **MySQL 8.0+** implementation of the Employee–Department–Project assignment. MySQL was selected because the repository did not contain an existing database setup or dialect; the scripts use MySQL's `SIGNAL`, delimiter, trigger, stored-procedure, recursive-CTE, and `EXPLAIN` syntax.
+These scripts cover the complete Indian E-commerce schema and the Employee–Department–Project assignment. MySQL 8.0+ is used for advanced features such as `SIGNAL`, triggers, stored procedures, recursive CTEs, and `EXPLAIN` syntax.
 
 ## Before you begin
 
@@ -13,6 +13,9 @@ These scripts are a self-contained **MySQL 8.0+** implementation of the Employee
 From the repository root, run the files in this order:
 
 ```bash
+mysql -u <user> -p < experiments/experiment_2_schema.sql
+mysql -u <user> -p < experiments/experiment_2_sample_data.sql
+# You can also test referential integrity using experiment_2_referential_integrity.sql
 mysql -u <user> -p < experiments/experiment_3_schema_and_queries.sql
 mysql -u <user> -p < experiments/experiment_4_joins_and_subqueries.sql
 mysql -u <user> -p < experiments/experiment_5_views_and_recursive_cte.sql
@@ -25,6 +28,8 @@ Alternatively, open each file in MySQL Workbench and execute them in the same se
 
 | Script | Coverage |
 | --- | --- |
+| `experiment_1_er_diagram.png` | ER Diagram for the E-commerce platform (Customer, Product, Specializations, etc.) |
+| `experiment_2_schema.sql` etc. | MySQL table definitions for the E-commerce platform with referential integrity. |
 | `experiment_3_schema_and_queries.sql` | Normalized Employee–Department–Project schema, 30 employees, 5 departments, 8 projects, selection, projection, aggregate functions, `GROUP BY`, `HAVING`, `CASE`, and `ORDER BY`. |
 | `experiment_4_joins_and_subqueries.sql` | Inner/left/self/three-way joins, correlated subquery, `EXISTS`, MySQL-compatible `INTERSECT`/`EXCEPT` simulations, and comparable `EXPLAIN` plans. |
 | `experiment_5_views_and_recursive_cte.sql` | Department salary and reporting-hierarchy views, read-only aggregate view explanation, a tested updatable single-table view, and recursive reporting chains. |
