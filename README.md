@@ -4,6 +4,8 @@ Course: DBMS Lab
 
 This repository contains the completion of 6 DBMS Lab experiments. It encompasses ER modeling, relational schema design, advanced SQL queries, views, recursive CTEs, stored procedures, and triggers.
 
+For the result/output part only, see [experiments/OUTPUTS.md](experiments/OUTPUTS.md).
+
 ## Repository Structure
 
 The project is structured inside the `experiments/` directory.
