@@ -1,11 +1,5 @@
--- Experiment 3: Employee-Department-Project schema and foundational queries
--- Dialect: MySQL 8.0+
--- Safe to re-run in the dedicated dbms_lab database. This recreates its demo data.
-
 CREATE DATABASE IF NOT EXISTS dbms_lab;
 USE dbms_lab;
-
--- Remove dependent lab objects as well, so Experiment 3 can reset a previous full run.
 DROP VIEW IF EXISTS v_department_salary_summary;
 DROP VIEW IF EXISTS v_employee_hierarchy;
 DROP VIEW IF EXISTS v_employee_directory;
@@ -18,13 +12,11 @@ DROP TABLE IF EXISTS employee_transfer_audit;
 DROP TABLE IF EXISTS employees;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS departments;
-
 CREATE TABLE departments (
     department_id INT PRIMARY KEY,
     department_name VARCHAR(80) NOT NULL UNIQUE,
     location VARCHAR(80) NOT NULL
 ) ENGINE = InnoDB;
-
 CREATE TABLE projects (
     project_id INT PRIMARY KEY,
     project_name VARCHAR(100) NOT NULL UNIQUE,
@@ -35,7 +27,6 @@ CREATE TABLE projects (
     CONSTRAINT fk_project_department
         FOREIGN KEY (department_id) REFERENCES departments(department_id)
 ) ENGINE = InnoDB;
-
 CREATE TABLE employees (
     emp_id INT PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -54,18 +45,15 @@ CREATE TABLE employees (
     CONSTRAINT fk_employee_manager
         FOREIGN KEY (manager_id) REFERENCES employees(emp_id)
 ) ENGINE = InnoDB;
-
 CREATE INDEX idx_employees_department ON employees(department_id);
 CREATE INDEX idx_employees_project ON employees(project_id);
 CREATE INDEX idx_employees_manager ON employees(manager_id);
-
 INSERT INTO departments (department_id, department_name, location) VALUES
     (1, 'Engineering', 'Bengaluru'),
     (2, 'Human Resources', 'Mumbai'),
     (3, 'Finance', 'Pune'),
     (4, 'Sales', 'Delhi'),
     (5, 'Operations', 'Chennai');
-
 INSERT INTO projects (project_id, project_name, department_id, budget, start_date) VALUES
     (1, 'Atlas Platform', 1, 500000.00, '2025-01-15'),
     (2, 'Mobile Refresh', 1, 300000.00, '2025-02-01'),
@@ -75,8 +63,6 @@ INSERT INTO projects (project_id, project_name, department_id, budget, start_dat
     (6, 'Compliance Review', 3, 90000.00, '2025-02-15'),
     (7, 'Market Expansion', 4, 400000.00, '2025-01-05'),
     (8, 'Supply Optimisation', 5, 250000.00, '2025-02-10');
-
--- Managers are inserted before their reports so the self-referencing foreign key is valid.
 INSERT INTO employees
     (emp_id, first_name, last_name, email, hire_date, salary, department_id, project_id, manager_id)
 VALUES
@@ -110,25 +96,17 @@ VALUES
     (28, 'Maya', 'Pillai', 'maya.pillai@example.com', '2022-02-14', 64000.00, 5, 8, 26),
     (29, 'Om', 'Prakash', 'om.prakash@example.com', '2022-10-18', 59000.00, 5, 8, 26),
     (30, 'Zoya', 'Mirza', 'zoya.mirza@example.com', '2023-06-07', 51000.00, 5, 8, 26);
-
--- Selection: return only employees earning at least 80,000.
 SELECT emp_id, first_name, last_name, salary
 FROM employees
 WHERE salary >= 80000;
-
--- Projection: choose just the requested columns (DISTINCT avoids duplicate departments).
 SELECT DISTINCT department_id
 FROM employees;
-
--- Aggregate functions over all employees.
 SELECT COUNT(*) AS employee_count,
        MIN(salary) AS lowest_salary,
        MAX(salary) AS highest_salary,
        ROUND(AVG(salary), 2) AS average_salary,
        SUM(salary) AS payroll
 FROM employees;
-
--- GROUP BY: salary totals and averages for each department.
 SELECT d.department_name,
        COUNT(e.emp_id) AS employee_count,
        ROUND(AVG(e.salary), 2) AS average_salary,
@@ -136,15 +114,11 @@ SELECT d.department_name,
 FROM departments AS d
 JOIN employees AS e ON e.department_id = d.department_id
 GROUP BY d.department_id, d.department_name;
-
--- HAVING filters groups after grouping.
 SELECT d.department_name, COUNT(e.emp_id) AS employee_count, SUM(e.salary) AS payroll
 FROM departments AS d
 JOIN employees AS e ON e.department_id = d.department_id
 GROUP BY d.department_id, d.department_name
 HAVING SUM(e.salary) > 350000;
-
--- CASE labels each salary with a readable band.
 SELECT emp_id, first_name, last_name, salary,
        CASE
            WHEN salary >= 100000 THEN 'Executive'
@@ -153,8 +127,6 @@ SELECT emp_id, first_name, last_name, salary,
            ELSE 'Associate'
        END AS salary_band
 FROM employees;
-
--- ORDER BY presents the highest-paid employees first, breaking ties by name.
 SELECT first_name, last_name, salary
 FROM employees
 ORDER BY salary DESC, last_name ASC, first_name ASC;
